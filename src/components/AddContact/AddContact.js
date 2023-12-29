@@ -1,20 +1,18 @@
 import React from 'react';
 import { Formik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import { useAddContactMutation } from '../../redux/contactsApi';
+
 import { FormInput, Label, Button, FormField } from './AddContact.styled';
-import { addNewContact } from '../../redux/contactsSlice';
-import { contacts } from '../../redux/selectors';
 
 const initialValues = {
   name: '',
   number: '',
 };
 
-const AddContact = () => {
-  const dispatch = useDispatch();
-  const { contacts: contactsList } = useSelector(contacts);
+const AddContact = ({ visibleContacts: contactsList }) => {
+  const [addContact] = useAddContactMutation();
 
   const handleSubmit = ({ name, number }, actions) => {
     const check = contactsList.find(contact => contact.name === name);
@@ -27,7 +25,7 @@ const AddContact = () => {
       return;
     }
 
-    dispatch(addNewContact(name, number));
+    addContact({ name, number });
     actions.resetForm();
   };
   return (
